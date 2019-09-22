@@ -1,6 +1,7 @@
 import cv2 as cv
 from matplotlib import pyplot as plt
 import numpy as np
+from typing import List
 
 def main(filename: str) -> None:
     img_gray = cv.imread(filename, cv.IMREAD_GRAYSCALE)
@@ -17,24 +18,35 @@ def threshold_image(image):
                                 cv.THRESH_BINARY, 11, 2)
 
 def find_lines(image_grayscale, image_color):
+    def restructure_array(lines: List) -> List:
+        result = []
+        for line in lines:
+            x1, y1, x2, y2 = line[0]
+            result.append((x1, y1, x2, y2))
+        return result
+
+    def find_boundaries(lines: List) -> List:
+        result = []
+        lines.sort()
+        result.append(lines[0])
+        result.append(lines[-1])
+        lines.sort(key=lambda points: points[3])
+        result.append(lines[0])
+        result.append(lines[-1])
+        return result
+
+    def draw_boundary(boundaries: List) -> None:
+        color = (0, 255, 0)
+        width = 2
+        for boundary in boundaries:
+            x1, y1, x2, y2 = boundary
+            cv.line(image_color, (x1, y1), (x2, y2), color, width)
+
     edges = cv.Canny(image_grayscale, 200, 220, apertureSize=3)
     lines = cv.HoughLinesP(edges, 1, np.pi/180.0, 200, 300, 4)
-    # TODO this should be sorted and copied to another list
-    found_lines = []
-    for line in lines:
-        x1, y1, x2, y2 = line[0]
-        found_lines.append((x1, y1, x2, y2))
-    found_lines.sort()
-    board_boundaries = []
-    board_boundaries.append(found_lines[0])
-    board_boundaries.append(found_lines[-1])
-    found_lines.sort(key=lambda points: points[3])
-    board_boundaries.append(found_lines[0])
-    board_boundaries.append(found_lines[-1])
-    print(board_boundaries)
-    for boundary in board_boundaries:
-        x1, y1, x2, y2 = boundary
-        cv.line(image_color, (x1, y1), (x2, y2), (0, 255, 0), 2)
+
+    draw_boundary(find_boundaries(restructure_array(lines)))
+
     return cv.cvtColor(image_color, cv.COLOR_BGR2RGB)
 
 def plot_image(image) -> None:
