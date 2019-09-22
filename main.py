@@ -8,7 +8,7 @@ def main(filename: str) -> None:
     img_color = cv.imread(filename, cv.IMREAD_UNCHANGED)
     if img_gray is not None and img_color is not None:
         print(f"Image {filename} successfuly read!")
-        plot_image(find_lines(img_gray, img_color))
+        plot_image(find_lines(img_gray, img_color), 'gray')
     else:
         print(f"Couldn't open image {filename} !")
 
@@ -46,11 +46,11 @@ def find_lines(image_grayscale, image_color):
     lines = cv.HoughLinesP(edges, 1, np.pi/180.0, 200, 300, 4)
 
     draw_boundary(find_boundaries(restructure_array(lines)))
+    plot_image(cv.cvtColor(image_color, cv.COLOR_BGR2RGB), None)
+    return crop_image(find_boundaries(restructure_array(lines)))
 
-    return cv.cvtColor(image_color, cv.COLOR_BGR2RGB)
-
-def plot_image(image) -> None:
-    plt.imshow(image)
+def plot_image(image, color: str) -> None:
+    plt.imshow(image, cmap=color)
     plt.show()
 
 if __name__ == "__main__":
