@@ -42,6 +42,14 @@ def find_lines(image_grayscale, image_color):
             x1, y1, x2, y2 = boundary
             cv.line(image_color, (x1, y1), (x2, y2), color, width)
 
+    def crop_image(boundaries: List):
+        x1 = boundaries[0][0]
+        x2 = boundaries[1][0]
+        y1 = boundaries[2][1]
+        y2 = boundaries[3][1]
+
+        return image_grayscale[x1:x2, y1:y2]
+    #TODO name this parameters
     edges = cv.Canny(image_grayscale, 200, 220, apertureSize=3)
     lines = cv.HoughLinesP(edges, 1, np.pi/180.0, 200, 300, 4)
 
