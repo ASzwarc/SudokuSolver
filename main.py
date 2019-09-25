@@ -9,7 +9,11 @@ def main(filename: str) -> None:
     img_color = cv.imread(filename, cv.IMREAD_UNCHANGED)
     if img_gray is not None and img_color is not None:
         print(f"Image {filename} successfuly read!")
-        plot_image(find_lines(img_gray, img_color), 'gray')
+        cropped_image = find_lines(img_gray, img_color)
+        plot_image(cropped_image, 'gray')
+        boxes = get_single_boxes(cropped_image)
+        for i in range(9):
+            plot_image(boxes[i], 'gray')
     else:
         print(f"Couldn't open image {filename} !")
 
@@ -29,7 +33,7 @@ def find_lines(image_grayscale, image_color):
         lines.sort(key=lambda points: points[0])
         result.append(lines[0])
         result.append(lines[-1])
-        lines.sort(key=lambda points     points[3])
+        lines.sort(key=lambda points: points[3])
         result.append(lines[0])
         result.append(lines[-1])
         return result
@@ -61,9 +65,24 @@ def find_lines(image_grayscale, image_color):
     lines = cv.HoughLinesP(edges, rho, theta, threshold, minLineLength,
                            maxLineGap)
 
-    draw_boundary(find_boundaries(restructure_array(lines)))
-    plot_image(cv.cvtColor(image_color, cv.COLOR_BGR2RGB), None)
+    # draw_boundary(find_boundaries(restructure_array(lines)))
+    # plot_image(cv.cvtColor(image_color, cv.COLOR_BGR2RGB), None)
     return crop_image(find_boundaries(restructure_array(lines)))
+
+
+def get_single_boxes(image):
+    width, height = image.shape
+    box_width = width // 9
+    box_height = height // 9
+
+    single_boxes = []
+    for x in range(9):
+        for y in range(9):
+            start_x: int = x * box_width
+            start_y: int = y * box_height
+            single_boxes.append(image[start_x:(start_x + box_width),
+                                      start_y:(start_y + box_height)])
+    return single_boxes
 
 
 def plot_image(image, color: str) -> None:
