@@ -1,7 +1,9 @@
 import cv2 as cv
 from matplotlib import pyplot as plt
 import numpy as np
-from typing import List
+from typing import List, Tuple
+
+# TODO add someting to recognize if frame is empty!
 
 
 def main(filename: str) -> None:
@@ -10,8 +12,9 @@ def main(filename: str) -> None:
     if img_gray is not None and img_color is not None:
         print(f"Image {filename} successfuly read!")
         cropped_image = find_lines(img_gray, img_color)
+        print(cropped_image.shape)
         plot_image(cropped_image, 'gray')
-        boxes = get_single_boxes(cropped_image)
+        boxes = resize_images_to_mnist(get_single_boxes(cropped_image))
         for i in range(9):
             plot_image(boxes[i], 'gray')
     else:
@@ -83,6 +86,14 @@ def get_single_boxes(image):
             single_boxes.append(image[start_x:(start_x + box_width),
                                       start_y:(start_y + box_height)])
     return single_boxes
+
+
+def resize_images_to_mnist(image_list):
+    mnist_dim: Tuple[int, int] = (28, 28)
+    result = []
+    for image in image_list:
+        result.append(cv.resize(image, mnist_dim, interpolation=cv.INTER_AREA))
+    return result
 
 
 def plot_image(image, color: str) -> None:
