@@ -22,18 +22,14 @@ def threshold_image(image):
 
 def find_lines(image_grayscale, image_color):
     def restructure_array(lines) -> List:
-        result = []
-        for line in lines:
-            x1, y1, x2, y2 = line[0]
-            result.append((x1, y1, x2, y2))
-        return result
+        return [line[0].tolist() for line in lines]
 
     def find_boundaries(lines: List) -> List:
         result = []
-        lines.sort()
+        lines.sort(key=lambda points: points[0])
         result.append(lines[0])
         result.append(lines[-1])
-        lines.sort(key=lambda points: points[3])
+        lines.sort(key=lambda points     points[3])
         result.append(lines[0])
         result.append(lines[-1])
         return result
@@ -65,7 +61,7 @@ def find_lines(image_grayscale, image_color):
     lines = cv.HoughLinesP(edges, rho, theta, threshold, minLineLength,
                            maxLineGap)
 
-    draw_boundary(find_boundaries(lines))
+    draw_boundary(find_boundaries(restructure_array(lines)))
     plot_image(cv.cvtColor(image_color, cv.COLOR_BGR2RGB), None)
     return crop_image(find_boundaries(restructure_array(lines)))
 
