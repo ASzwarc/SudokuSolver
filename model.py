@@ -1,9 +1,6 @@
 import tensorflow as tf
 
 
-# TODO: download mnist dataset
-# TODO: create Keras model
-# TODO: train and evaluate
 # TODO: save model weights in separate file
 
 def load_data():
