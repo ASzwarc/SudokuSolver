@@ -13,11 +13,34 @@ def load_data():
     return x_train, y_train, x_test, y_test
 
 
+def build_model():
+    global model
+    model = tf.keras.models.Sequential([
+        tf.keras.layers.Flatten(input_shape=(28, 28)),
+        tf.keras.layers.Dense(128, activation=tf.keras.activations.relu),
+        tf.keras.layers.Dropout(0.2),
+        tf.keras.layers.Dense(10, activation=tf.keras.activations.softmax)
+    ])
+
+    model.compile(optimizer=tf.optimizers.Adam,
+                  loss=tf.losses.sparse_categorical_crossentropy,
+                  metrics=[tf.metrics.Accuracy, tf.metrics.AUC])
+
+
+def train_model(x, y, epochs: int):
+    model.fit(x, y, epochs)
+
+
+def evaluate_model(x_test, y_test):
+    model.evaluate(x_test, y_test)
+
+
 def main():
-    if tf.test.gpu_device_name():
-        print(f"Default GPU Device: {tf.test.gpu_device_name()}")
-    else:
-        print("Please install GPU version of TF")
+    epochs = 10
+    x_train, y_train, x_test, y_test = load_data()
+    build_model()
+    train_model(x_train, y_train, epochs)
+    evaluate_model(x_test, y_test)
 
 
 if __name__ == "__main__":
