@@ -19,9 +19,9 @@ def build_model():
         tf.keras.layers.Dense(10, activation=tf.keras.activations.softmax)
     ])
 
-    model.compile(optimizer=tf.optimizers.Adam,
+    model.compile(optimizer='adam',
                   loss=tf.losses.sparse_categorical_crossentropy,
-                  metrics=[tf.metrics.Accuracy, tf.metrics.AUC])
+                  metrics=["accuracy", "AUC"])
 
 
 def train_model(x, y, epochs: int):
