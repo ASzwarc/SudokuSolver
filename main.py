@@ -2,11 +2,21 @@ import cv2 as cv
 from matplotlib import pyplot as plt
 import numpy as np
 from typing import List, Tuple
+from model.model import DigitRecognizer
 
 # TODO add someting to recognize if frame is empty!
 
 
+def prepare_model():
+    recognizer = DigitRecognizer()
+    recognizer.load_weights()
+    recognizer.evaluate_model()
+    print("Digit recognizer is ready!")
+    return recognizer
+
+
 def main(filename: str) -> None:
+    recognizer = prepare_model()
     img_gray = cv.imread(filename, cv.IMREAD_GRAYSCALE)
     img_color = cv.imread(filename, cv.IMREAD_UNCHANGED)
     if img_gray is not None and img_color is not None:
@@ -15,8 +25,11 @@ def main(filename: str) -> None:
         print(cropped_image.shape)
         plot_image(cropped_image, 'gray')
         boxes = resize_images_to_mnist(get_single_boxes(cropped_image))
-        for i in range(9):
+        for i in range(4):
             plot_image(boxes[i], 'gray')
+            prediction = recognizer.predict(boxes[i].reshape(1, 28, 28).
+                                            astype('float32') / 255.0)
+            print(f"Sample #{i} - {prediction}")
     else:
         print(f"Couldn't open image {filename} !")
 
