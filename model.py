@@ -14,22 +14,23 @@ def build_model():
     global model
     model = tf.keras.models.Sequential([
         tf.keras.layers.Flatten(input_shape=(28, 28)),
-        tf.keras.layers.Dense(128, activation=tf.keras.activations.relu),
+        tf.keras.layers.Dense(128, activation='relu'),
         tf.keras.layers.Dropout(0.2),
-        tf.keras.layers.Dense(10, activation=tf.keras.activations.softmax)
+        tf.keras.layers.Dense(10, activation='softmax')
     ])
 
     model.compile(optimizer='adam',
-                  loss=tf.losses.sparse_categorical_crossentropy,
-                  metrics=["accuracy", "AUC"])
+                  loss='sparse_categorical_crossentropy',
+                  metrics=["accuracy"])
 
 
 def train_model(x, y, epochs: int):
-    model.fit(x, y, epochs)
+    model.fit(x, y, epochs=epochs)
 
 
 def evaluate_model(x_test, y_test):
-    model.evaluate(x_test, y_test)
+    loss, acc = model.evaluate(x_test, y_test, verbose=0)
+    print(f"loss: {loss}, accuracy: {acc}")
 
 
 def main():
