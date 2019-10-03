@@ -24,7 +24,6 @@ def main(filename: str) -> None:
     if img_gray is not None and img_color is not None:
         print(f"Image {filename} successfuly read!")
         cropped_image = find_lines(img_gray, img_color)
-        print(cropped_image.shape)
         plot_image(cropped_image, 'gray')
         boxes = resize_images_to_mnist(get_single_boxes(cropped_image))
         for i in range(4):
@@ -56,35 +55,38 @@ def find_lines(image_grayscale, image_color):
         result.append(lines[-1])
         return result
 
-    def draw_boundary(boundaries: List) -> None:
+    def draw_boundary(boundaries: List, image_color) -> None:
         color = (0, 255, 0)
         width = 2
         for boundary in boundaries:
             x1, y1, x2, y2 = boundary
+            print(f"Drawn boundaries: ({x1}, {y1}) -> ({x2}, {y2})")
             cv.line(image_color, (x1, y1), (x2, y2), color, width)
+        return image_color
 
     def crop_image(boundaries: List):
         x1 = boundaries[0][0]
         x2 = boundaries[1][0]
         y1 = boundaries[2][1]
         y2 = boundaries[3][1]
-
-        return image_grayscale[x1:x2, y1:y2]
+        print(f"Crop image to [{x1}:{x2}, {y1}:{y2}]")
+        return image_grayscale[y1:y2, x1:x2]
 
     lowThreshold: int = 200
     highThreshold: int = 220
     rho: int = 1
     theta: int = np.pi/180
     threshold: int = 200
-    minLineLength: int = 300
-    maxLineGap: int = 4
+    minLineLength: int = 400
+    maxLineGap: int = 8
     edges = cv.Canny(image_grayscale, lowThreshold, highThreshold,
                      apertureSize=3)
     lines = cv.HoughLinesP(edges, rho, theta, threshold, minLineLength,
                            maxLineGap)
 
-    # draw_boundary(find_boundaries(restructure_array(lines)))
-    # plot_image(cv.cvtColor(image_color, cv.COLOR_BGR2RGB), None)
+    draw_boundary(find_boundaries(restructure_array(
+        lines)), image_color)
+    plot_image(cv.cvtColor(image_color, cv.COLOR_BGR2RGB), None)
     return crop_image(find_boundaries(restructure_array(lines)))
 
 
