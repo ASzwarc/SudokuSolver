@@ -1,4 +1,5 @@
 import tensorflow as tf
+import numpy as np
 
 
 class DigitRecognizer:
@@ -56,7 +57,7 @@ class DigitRecognizer:
         print(f"Weights for model were loaded from: {filename}")
 
     def predict(self, digit_image):
-        return self._model.predict(digit_image)
+        return np.argmax(self._model.predict(digit_image))
 
 
 if __name__ == "__main__":

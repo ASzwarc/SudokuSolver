@@ -28,7 +28,7 @@ def main(filename: str) -> None:
             plot_image(boxes[i], 'gray')
             prediction = recognizer.predict(boxes[i].reshape(1, 28, 28).
                                             astype('float32') / 255.0)
-            print(f"Sample #{i} - {prediction}")
+            print(f"Sample #{i}: {prediction}")
     else:
         print(f"Couldn't open image {filename} !")
 
