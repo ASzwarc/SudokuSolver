@@ -1,11 +1,23 @@
 import tensorflow as tf
 import numpy as np
+import logging
 
 
 class DigitRecognizer:
-    def __init__(self):
+    def __init__(self, logging_level):
         self._model = self._build_model()
         self._is_model_trained = False
+        self._logger = self._set_logger(logging_level)
+
+    def _set_logger(self, logging_level):
+        streamHandler = logging.StreamHandler()
+        streamHandler.setLevel(logging_level)
+        streamHandler.setFormatter(
+            logging.Formatter('%(name)s[%(levelname)s]: %(message)s'))
+        logger = logging.getLogger(type(self).__name__)
+        logger.setLevel(logging_level)
+        logger.addHandler(streamHandler)
+        return logger
 
     def _build_model(self):
         model = tf.keras.models.Sequential([
@@ -36,31 +48,31 @@ class DigitRecognizer:
 
     def evaluate_model(self):
         if not self._is_model_trained:
-            print("Model wasn't trained!!! Either train model or load \
-                stored weights!!!")
+            self._logger.error("Model wasn't trained!!! Either train model" +
+                               " or load stored weights!!!")
             return
 
         _, _, x_test, y_test = self._load_data()
         loss, acc = self._model.evaluate(x_test, y_test, verbose=0)
-        print(f"loss: {loss}, accuracy: {acc}")
+        self._logger.info(f"loss: {loss}, accuracy: {acc}")
 
     def save_weights(self, filename='model/digit_recognizer_weights.hdf5'):
         if not self._is_model_trained:
-            print("I can't save model since it wasn't trained!")
+            self._logger.error("I can't save model since it wasn't trained!")
             return
         self._model.save_weights(filename)
-        print(f"Model was saved in {filename}")
+        self._logger.info(f"Model was saved in {filename}")
 
     def load_weights(self, filename='model/digit_recognizer_weights.hdf5'):
         self._model.load_weights(filename)
         self._is_model_trained = True
-        print(f"Weights for model were loaded from: {filename}")
+        self._logger.info(f"Weights for model were loaded from: {filename}")
 
     def predict(self, digit_image):
         return np.argmax(self._model.predict(digit_image))
 
 
 if __name__ == "__main__":
-    recognizer = DigitRecognizer()
+    recognizer = DigitRecognizer(logging.DEBUG)
     recognizer.load_weights()
     recognizer.evaluate_model()
