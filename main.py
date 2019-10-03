@@ -5,8 +5,6 @@ from typing import List, Tuple
 from model.model import DigitRecognizer
 
 # TODO add someting to recognize if frame is empty!
-# TODO fix cropping because there is to many lines in single box
-# TODO add printing prediction with best result instead of array
 
 
 def prepare_model():
