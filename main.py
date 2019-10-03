@@ -3,13 +3,28 @@ from matplotlib import pyplot as plt
 import numpy as np
 from typing import List, Tuple
 from model.model import DigitRecognizer
+import logging
+
+
+def set_logger(logging_level):
+    streamHandler = logging.StreamHandler()
+    streamHandler.setLevel(logging_level)
+    streamHandler.setFormatter(
+        logging.Formatter('%(name)s[%(levelname)s]: %(message)s'))
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging_level)
+    logger.addHandler(streamHandler)
+    return logger
+
+
+logger = set_logger(logging.DEBUG)
 
 
 def prepare_model():
-    recognizer = DigitRecognizer()
+    recognizer = DigitRecognizer(logging.DEBUG)
     recognizer.load_weights()
     recognizer.evaluate_model()
-    print("Digit recognizer is ready!")
+    logger.info("Digit recognizer is ready!")
     return recognizer
 
 
@@ -18,7 +33,7 @@ def main(filename: str) -> None:
     img_gray = cv.imread(filename, cv.IMREAD_GRAYSCALE)
     img_color = cv.imread(filename, cv.IMREAD_UNCHANGED)
     if img_gray is not None and img_color is not None:
-        print(f"Image {filename} successfuly read!")
+        logger.info(f"Image {filename} successfuly read!")
         cropped_image = find_lines(img_gray, img_color)
         # plot_image(cropped_image, 'gray')
         boxes = resize_images_to_mnist(get_single_boxes(cropped_image))
@@ -29,9 +44,9 @@ def main(filename: str) -> None:
                                                 astype('float32') / 255.0)
             else:
                 prediction = 0
-            print(f"Sample ({i // 9}, {i % 9}): {prediction}")
+            logger.debug(f"Sample ({i // 9}, {i % 9}): {prediction}")
     else:
-        print(f"Couldn't open image {filename} !")
+        logger.error(f"Couldn't open image {filename} !")
 
 
 def doesBoxContainDigit(image) -> bool:
@@ -66,7 +81,7 @@ def find_lines(image_grayscale, image_color):
         width = 2
         for boundary in boundaries:
             x1, y1, x2, y2 = boundary
-            print(f"Drawn boundaries: ({x1}, {y1}) -> ({x2}, {y2})")
+            logger.debug(f"Drawn boundaries: ({x1}, {y1}) -> ({x2}, {y2})")
             cv.line(image_color, (x1, y1), (x2, y2), color, width)
         return image_color
 
@@ -75,7 +90,7 @@ def find_lines(image_grayscale, image_color):
         x2 = boundaries[1][0]
         y1 = boundaries[2][1]
         y2 = boundaries[3][1]
-        print(f"Crop image to [{x1}:{x2}, {y1}:{y2}]")
+        logger.debug(f"Crop image to [{x1}:{x2}, {y1}:{y2}]")
         return image_grayscale[y1:y2, x1:x2]
 
     lowThreshold: int = 200
