@@ -4,8 +4,6 @@ import numpy as np
 from typing import List, Tuple
 from model.model import DigitRecognizer
 
-# TODO add someting to recognize if frame is empty!
-
 
 def prepare_model():
     recognizer = DigitRecognizer()
@@ -22,15 +20,25 @@ def main(filename: str) -> None:
     if img_gray is not None and img_color is not None:
         print(f"Image {filename} successfuly read!")
         cropped_image = find_lines(img_gray, img_color)
-        plot_image(cropped_image, 'gray')
+        # plot_image(cropped_image, 'gray')
         boxes = resize_images_to_mnist(get_single_boxes(cropped_image))
-        for i in range(4):
-            plot_image(boxes[i], 'gray')
-            prediction = recognizer.predict(boxes[i].reshape(1, 28, 28).
-                                            astype('float32') / 255.0)
-            print(f"Sample #{i}: {prediction}")
+        for i in range(81):
+            # plot_image(boxes[i], 'gray')
+            if doesBoxContainDigit(boxes[i]):
+                prediction = recognizer.predict(boxes[i].reshape(1, 28, 28).
+                                                astype('float32') / 255.0)
+            else:
+                prediction = 0
+            print(f"Sample ({i // 9}, {i % 9}): {prediction}")
     else:
         print(f"Couldn't open image {filename} !")
+
+
+def doesBoxContainDigit(image) -> bool:
+    threshold: float = 230.0
+    mean = cv.mean(image)
+    # print(f"Mean of image: {mean}")
+    return mean[0] < threshold
 
 
 def threshold_image(image):
@@ -82,9 +90,9 @@ def find_lines(image_grayscale, image_color):
     lines = cv.HoughLinesP(edges, rho, theta, threshold, minLineLength,
                            maxLineGap)
 
-    draw_boundary(find_boundaries(restructure_array(
-        lines)), image_color)
-    plot_image(cv.cvtColor(image_color, cv.COLOR_BGR2RGB), None)
+    # draw_boundary(find_boundaries(restructure_array(
+    #     lines)), image_color)
+    # plot_image(cv.cvtColor(image_color, cv.COLOR_BGR2RGB), None)
     return crop_image(find_boundaries(restructure_array(lines)))
 
 
