@@ -3,8 +3,12 @@ from matplotlib import pyplot as plt
 import numpy as np
 from typing import List, Tuple
 from model.model import DigitRecognizer
+from board import Board
 import logging
 
+
+# TODO Think how to configure logger in one place and passed it to objects
+# with proper name
 
 def set_logger(logging_level):
     streamHandler = logging.StreamHandler()
@@ -30,6 +34,7 @@ def prepare_model():
 
 def main(filename: str) -> None:
     recognizer = prepare_model()
+    board = Board(logging.DEBUG)
     img_gray = cv.imread(filename, cv.IMREAD_GRAYSCALE)
     img_color = cv.imread(filename, cv.IMREAD_UNCHANGED)
     if img_gray is not None and img_color is not None:
@@ -37,14 +42,19 @@ def main(filename: str) -> None:
         cropped_image = find_lines(img_gray, img_color)
         # plot_image(cropped_image, 'gray')
         boxes = resize_images_to_mnist(get_single_boxes(cropped_image))
-        for i in range(81):
-            # plot_image(boxes[i], 'gray')
-            if doesBoxContainDigit(boxes[i]):
-                prediction = recognizer.predict(boxes[i].reshape(1, 28, 28).
-                                                astype('float32') / 255.0)
-            else:
-                prediction = 0
-            logger.debug(f"Sample ({i // 9}, {i % 9}): {prediction}")
+        for row in range(9):
+            row_numbers = []
+            for col in range(9):
+                # plot_image(boxes[row+col], 'gray')
+                if doesBoxContainDigit(boxes[row+col]):
+                    prediction = recognizer.predict(boxes[row+col].
+                                                    reshape(1, 28, 28).
+                                                    astype('float32') / 255.0)
+                else:
+                    prediction = 0
+                row_numbers.append(prediction)
+            board.add_row(row_numbers)
+        board.pretty_print()
     else:
         logger.error(f"Couldn't open image {filename} !")
 
