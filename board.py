@@ -52,5 +52,7 @@ class Board():
 
     def pretty_print(self):
         for row in range(len(self._board)):
-            self._logger.debug(" | ".join(
+            self._logger.debug("|".join(
                 [str(val) for val in self._board[row]]))
+            if row < 8:
+                self._logger.debug("- " * 9)
