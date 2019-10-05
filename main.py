@@ -2,7 +2,7 @@ import cv2 as cv
 from matplotlib import pyplot as plt
 import numpy as np
 from typing import List, Tuple
-from model.model import DigitRecognizer
+from model.digitrecognizer import DigitRecognizer
 from board import Board
 import logging
 
@@ -47,9 +47,11 @@ def main(filename: str) -> None:
             for col in range(9):
                 # plot_image(boxes[row+col], 'gray')
                 if doesBoxContainDigit(boxes[row+col]):
-                    prediction = recognizer.predict(boxes[row+col].
-                                                    reshape(1, 28, 28).
-                                                    astype('float32') / 255.0)
+                    cv.imwrite(f"input_images/SingleBox_{row}-{col}.png",
+                               boxes[row+col])
+                    reformated_box = boxes[row+col].reshape(1, 28, 28).astype(
+                        'float32') / 255.0
+                    prediction = recognizer.predict(reformated_box)
                 else:
                     prediction = 0
                 row_numbers.append(prediction)
