@@ -51,6 +51,9 @@ class Board():
                              "board can only have 9!")
 
     def pretty_print(self):
+        """
+        Prints whole board nicely.
+        """
         for row in range(len(self._board)):
             self._logger.debug("|".join(
                 [str(val) for val in self._board[row]]))
