@@ -123,7 +123,16 @@ def find_lines(image_grayscale, image_color):
     return crop_image(find_boundaries(restructure_array(lines)))
 
 
-def get_single_boxes(image):
+def get_single_boxes(image) -> List:
+    """
+    Slices image to 81 boxes in which should be one box from sudoku board
+
+    Arguments:
+        image {np.array} -- openCV's image
+
+    Returns:
+        List -- list of 81 single box images.
+    """
     width, height = image.shape
     box_width = width // 9
     box_height = height // 9
@@ -138,7 +147,16 @@ def get_single_boxes(image):
     return single_boxes
 
 
-def resize_images_to_mnist(image_list):
+def resize_images_to_mnist(image_list: List) -> List:
+    """
+    Resizes each image in list to 28x28px.
+
+    Arguments:
+        image_list {List} -- list of openCV's images
+
+    Returns:
+        List -- list of openCV's images in different size.
+    """
     mnist_dim: Tuple[int, int] = (28, 28)
     result = []
     for image in image_list:
@@ -147,6 +165,16 @@ def resize_images_to_mnist(image_list):
 
 
 def plot_image(image, color: str) -> None:
+    """
+    Shows image in color.
+
+    Arguments:
+        image {np.array} -- image read with openCV
+        color {str} -- string that defines color palete, taken from cmap param.
+
+    Returns:
+        None
+    """
     plt.imshow(image, cmap=color)
     plt.show()
 
