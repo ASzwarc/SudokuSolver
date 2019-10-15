@@ -116,6 +116,9 @@ def find_lines(image_grayscale, image_color):
                      apertureSize=3)
     lines = cv.HoughLinesP(edges, rho, theta, threshold, minLineLength,
                            maxLineGap)
+    if lines is None:
+        logger.error("Didn't found any lines!")
+        return
 
     # draw_boundary(find_boundaries(restructure_array(
     #     lines)), image_color)
