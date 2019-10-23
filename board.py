@@ -14,13 +14,9 @@ class Board():
         self._logger = self._set_logger(logging_level)
 
     def _set_logger(self, logging_level):
-        streamHandler = logging.StreamHandler()
-        streamHandler.setLevel(logging_level)
-        streamHandler.setFormatter(
-            logging.Formatter('%(name)s[%(levelname)s]: %(message)s'))
+        logging.basicConfig(format='%(name)s[%(levelname)s]: %(message)s')
         logger = logging.getLogger(type(self).__name__)
         logger.setLevel(logging_level)
-        logger.addHandler(streamHandler)
         return logger
 
     @property
