@@ -26,7 +26,7 @@ class Board():
 
         Returns:
             List[List[int]] -- returns list of already filled elements, empty
-            elemnts have value 0.
+            elements have value 0.
         """
         return self._board
 
@@ -56,6 +56,22 @@ class Board():
             if row < 8:
                 self._logger.debug("-" * 18)
 
+    def solver(self):
+        solution = []
+        # adding row constraint
+        for row in self._board:
+            solution_row = []
+            possible_values = "123456789"
+            possible_values = possible_values.translate(
+                {ord(str(i)): None for i in row})
+            for elem in row:
+                if elem != 0:
+                    solution_row.append(str(elem))
+                else:
+                    solution_row.append(possible_values)
+            solution.append(solution_row)
+        self._logger.debug(solution)
+
 
 if __name__ == "__main__":
     board = Board(logging.DEBUG)
@@ -69,3 +85,4 @@ if __name__ == "__main__":
     board.add_row([0, 4, 0, 0, 5, 0, 0, 3, 6])
     board.add_row([7, 0, 3, 0, 1, 8, 0, 0, 0])
     board.pretty_print()
+    board.solver()
