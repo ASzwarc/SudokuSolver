@@ -77,9 +77,10 @@ class Board():
                               if row[col_iter] > 0]
             trans_dict = {ord(str(i)): None for i in col_constraint}
             for row_iter in range(len(self._board)):
-                solution[row_iter][col_iter] =\
-                    solution[row_iter][col_iter].translate(trans_dict)
-        self._logger.debug(solution)
+                if len(solution[row_iter][col_iter]) > 1:
+                    solution[row_iter][col_iter] =\
+                        solution[row_iter][col_iter].translate(trans_dict)
+        self._logger.debug("\n" + "\n".join([", ".join(row) for row in solution]))
 
 
 if __name__ == "__main__":
