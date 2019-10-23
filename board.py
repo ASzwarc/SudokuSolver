@@ -58,7 +58,7 @@ class Board():
 
     def solver(self):
         solution = []
-        # adding row constraint
+        # row constraint
         for row in self._board:
             solution_row = []
             possible_values = "123456789"
@@ -70,6 +70,15 @@ class Board():
                 else:
                     solution_row.append(possible_values)
             solution.append(solution_row)
+        self._logger.debug(solution)
+        # col constraint
+        for col_iter in range(len(self._board[0])):
+            col_constraint = [row[col_iter] for row in self._board
+                              if row[col_iter] > 0]
+            trans_dict = {ord(str(i)): None for i in col_constraint}
+            for row_iter in range(len(self._board)):
+                solution[row_iter][col_iter] =\
+                    solution[row_iter][col_iter].translate(trans_dict)
         self._logger.debug(solution)
 
 
