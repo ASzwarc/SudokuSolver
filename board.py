@@ -57,6 +57,11 @@ class Board():
                 self._logger.debug("-" * 18)
 
     def solver(self):
+        def print_it_nicely(solution_board):
+            print("\n")
+            print("\n".join([" | ".join([elem.rjust(9, ' ') for elem in row])
+                            for row in solution_board]))
+
         solution = []
         # row constraint
         for row in self._board:
@@ -70,7 +75,6 @@ class Board():
                 else:
                     solution_row.append(possible_values)
             solution.append(solution_row)
-        self._logger.debug(solution)
         # col constraint
         for col_iter in range(len(self._board[0])):
             col_constraint = [row[col_iter] for row in self._board
@@ -80,7 +84,7 @@ class Board():
                 if len(solution[row_iter][col_iter]) > 1:
                     solution[row_iter][col_iter] =\
                         solution[row_iter][col_iter].translate(trans_dict)
-        self._logger.debug("\n" + "\n".join([", ".join(row) for row in solution]))
+        print_it_nicely(solution)
 
 
 if __name__ == "__main__":
