@@ -1,5 +1,6 @@
 from typing import List
 import logging
+from collections import namedtuple
 
 
 class Board():
@@ -63,6 +64,8 @@ class Board():
                             for row in solution_board]))
 
         solution = []
+        Point = namedtuple('Point', ['row', 'col'])
+        found_points = []
         # row constraint
         for row in self._board:
             solution_row = []
@@ -82,9 +85,13 @@ class Board():
             trans_dict = {ord(str(i)): None for i in col_constraint}
             for row_iter in range(len(self._board)):
                 if len(solution[row_iter][col_iter]) > 1:
-                    solution[row_iter][col_iter] =\
-                        solution[row_iter][col_iter].translate(trans_dict)
+                    acc_vals = solution[row_iter][col_iter].translate(
+                        trans_dict)
+                    if len(acc_vals) == 1:
+                        found_points.append(Point(row_iter, col_iter))
+                    solution[row_iter][col_iter] = acc_vals
         print_it_nicely(solution)
+        print(found_points)
 
 
 if __name__ == "__main__":
