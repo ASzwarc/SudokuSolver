@@ -104,13 +104,15 @@ class Board():
                     if len(elem) > 1:
                         acc_vals = flattened[elem_no].translate(
                             box_constraint_dict)
-                        flattened[elem_no] = acc_vals
+                        solution[row_iter + (elem_no // 3)][col_iter +
+                                                            (elem_no % 3)] =\
+                            acc_vals
                         if len(acc_vals) == 1:
                             found_points.append(
                                 Point(row_iter + (elem_no // 3),
                                       col_iter + (elem_no % 3)))
-                print(flattened)
                 print(found_points)
+        print_it_nicely(solution)
 
 
 if __name__ == "__main__":
