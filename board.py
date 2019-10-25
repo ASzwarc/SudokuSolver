@@ -92,6 +92,25 @@ class Board():
                     solution[row_iter][col_iter] = acc_vals
         print_it_nicely(solution)
         print(found_points)
+        # box constraint
+        for row_iter in range(0, 9, 3):
+            for col_iter in range(0, 9, 3):
+                flattened = [elem for row in solution[row_iter: row_iter + 3]
+                             for elem in row[col_iter: col_iter + 3]]
+                box_constraint_dict = {ord(i): None for i in
+                                       [elem for elem in flattened
+                                        if len(elem) == 1]}
+                for elem_no, elem in enumerate(flattened):
+                    if len(elem) > 1:
+                        acc_vals = flattened[elem_no].translate(
+                            box_constraint_dict)
+                        flattened[elem_no] = acc_vals
+                        if len(acc_vals) == 1:
+                            found_points.append(
+                                Point(row_iter + (elem_no // 3),
+                                      col_iter + (elem_no % 3)))
+                print(flattened)
+                print(found_points)
 
 
 if __name__ == "__main__":
