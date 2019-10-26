@@ -132,8 +132,8 @@ class Board():
                                       col_iter + (elem_no % 3)))
                 print(found_points)
         print_it_nicely(solution)
-        evaluate_point(solution, found_points[2],
-                       solution[found_points[2].row][found_points[2].col])
+        for point in found_points:
+            evaluate_point(solution, point, solution[point.row][point.col])
         print_it_nicely(solution)
 
 
