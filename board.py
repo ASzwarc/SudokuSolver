@@ -104,8 +104,8 @@ class Board():
         print_it_nicely(solution)
         print(found_points)
         # box constraint
-        for row_iter in range(0, 9, 3):
-            for col_iter in range(0, 9, 3):
+        for row_iter in range(0, len(self._board), 3):
+            for col_iter in range(0, len(self._board[0]), 3):
                 flattened = [elem for row in solution[row_iter: row_iter + 3]
                              for elem in row[col_iter: col_iter + 3]]
                 box_constraint_dict = {ord(i): None for i in
