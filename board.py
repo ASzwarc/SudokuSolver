@@ -63,6 +63,17 @@ class Board():
             print("\n".join([" | ".join([elem.rjust(9, ' ') for elem in row])
                             for row in solution_board]))
 
+        def evaluate_point(solution_board, point, point_value):
+            found_points = []
+            for elem_no, elem in enumerate(solution_board[point.row]):
+                if len(elem) > 1 and point_value in elem:
+                    acc_val = solution_board[point.row][elem_no].replace(
+                        point_value, '', 1)
+                    if len(acc_val) == 1:
+                        found_points.append(Point(point.row, elem_no))
+                    solution_board[point.row][elem_no] = acc_val
+            return found_points
+
         solution = []
         Point = namedtuple('Point', ['row', 'col'])
         found_points = []
@@ -112,6 +123,9 @@ class Board():
                                 Point(row_iter + (elem_no // 3),
                                       col_iter + (elem_no % 3)))
                 print(found_points)
+        print_it_nicely(solution)
+        evaluate_point(solution, found_points[2],
+                       solution[found_points[2].row][found_points[2].col])
         print_it_nicely(solution)
 
 
