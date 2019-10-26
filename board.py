@@ -83,6 +83,7 @@ class Board():
 
         solution = []
         Point = namedtuple('Point', ['row', 'col'])
+        # TODO change it to dict with Point as a key and value
         found_points = []
         # row constraint
         for row in self._board:
