@@ -72,6 +72,13 @@ class Board():
                     if len(acc_val) == 1:
                         found_points.append(Point(point.row, elem_no))
                     solution_board[point.row][elem_no] = acc_val
+            for row_iter in range(len(solution_board)):
+                elem = solution_board[row_iter][point.col]
+                if len(elem) > 1 and point_value in elem:
+                    acc_val = elem.replace(point_value, '', 1)
+                    if len(acc_val) == 1:
+                        found_points.append(Point(row_iter, point.col))
+                    solution_board[row_iter][point.col] = acc_val
             return found_points
 
         solution = []
