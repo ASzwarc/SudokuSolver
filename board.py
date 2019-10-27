@@ -125,6 +125,8 @@ class Board():
 
 if __name__ == "__main__":
     board = Board(logging.DEBUG)
+    # Board taken from:
+    # https://dingo.sbs.arizona.edu/~sandiway/sudoku/examples.html
     board.add_row([0, 2, 0, 6, 0, 8, 0, 0, 0])
     board.add_row([5, 8, 0, 0, 0, 9, 7, 0, 0])
     board.add_row([0, 0, 0, 0, 4, 0, 0, 0, 0])
