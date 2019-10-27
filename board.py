@@ -71,6 +71,8 @@ class Board():
                         point_value, '', 1)
                     if len(acc_val) == 1:
                         found_points.append(Point(point.row, elem_no))
+                        self._logger.debug("Row eval: new point [%s, %s] = %s",
+                                           point.row, elem_no, acc_val)
                     solution_board[point.row][elem_no] = acc_val
             for row_iter in range(len(solution_board)):
                 elem = solution_board[row_iter][point.col]
@@ -78,6 +80,9 @@ class Board():
                     acc_val = elem.replace(point_value, '', 1)
                     if len(acc_val) == 1:
                         found_points.append(Point(row_iter, point.col))
+                        self._logger.debug(
+                            "Column eval: new point [%s, %s] = %s",
+                            row_iter, point.col, acc_val)
                     solution_board[row_iter][point.col] = acc_val
             return found_points
 
@@ -108,9 +113,11 @@ class Board():
                         trans_dict)
                     if len(acc_vals) == 1:
                         found_points.append(Point(row_iter, col_iter))
+                        self._logger.debug(
+                            "Column eval: new point [%s, %s] = %s",
+                            row_iter, col_iter, acc_vals)
                     solution[row_iter][col_iter] = acc_vals
         print_it_nicely(solution)
-        print(found_points)
         # box constraint
         for row_iter in range(0, len(self._board), 3):
             for col_iter in range(0, len(self._board[0]), 3):
@@ -127,11 +134,12 @@ class Board():
                                                             (elem_no % 3)] =\
                             acc_vals
                         if len(acc_vals) == 1:
-                            found_points.append(
-                                Point(row_iter + (elem_no // 3),
-                                      col_iter + (elem_no % 3)))
-                print(found_points)
+                            found_points.append(Point(row, col))
+                            self._logger.debug(
+                                "Box eval: new point [%s, %s] = %s",
+                                row, col, acc_vals)
         print_it_nicely(solution)
+        self._logger.debug("Found points evaluation")
         for point in found_points:
             evaluate_point(solution, point, solution[point.row][point.col])
         print_it_nicely(solution)
