@@ -145,7 +145,7 @@ class Board():
                                point.row, point.col)
             found_points.extend(evaluate_point(solution, point,
                                                solution[point.row][point.col])
-                               )
+                                )
         print_it_nicely(solution)
 
 
