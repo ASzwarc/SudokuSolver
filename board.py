@@ -130,9 +130,9 @@ class Board():
                     if len(elem) > 1:
                         acc_vals = flattened[elem_no].translate(
                             box_constraint_dict)
-                        solution[row_iter + (elem_no // 3)][col_iter +
-                                                            (elem_no % 3)] =\
-                            acc_vals
+                        row = row_iter + (elem_no // 3)
+                        col = col_iter + (elem_no % 3)
+                        solution[row][col] = acc_vals
                         if len(acc_vals) == 1:
                             found_points.append(Point(row, col))
                             self._logger.debug(
@@ -141,7 +141,11 @@ class Board():
         print_it_nicely(solution)
         self._logger.debug("Found points evaluation")
         for point in found_points:
-            evaluate_point(solution, point, solution[point.row][point.col])
+            self._logger.debug("Evaluating Point(%s, %s)",
+                               point.row, point.col)
+            found_points.extend(evaluate_point(solution, point,
+                                               solution[point.row][point.col])
+                               )
         print_it_nicely(solution)
 
 
