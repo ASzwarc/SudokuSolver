@@ -84,6 +84,21 @@ class Board():
                             "Column eval: new point [%s, %s] = %s",
                             row_iter, point.col, acc_val)
                     solution_board[row_iter][point.col] = acc_val
+            for row_iter in range(0, len(solution_board), 3):
+                for col_iter in range(0, len(solution_board[0]), 3):
+                    flattened = [elem for row in
+                                 solution_board[row_iter:row_iter+3]
+                                 for elem in row[col_iter:col_iter+3]]
+                    for elem in flattened:
+                        if len(elem) > 1 and point_value in elem:
+                            acc_val = elem.replace(point_value, '', 1)
+                            if len(acc_val) == 1:
+                                row = row_iter + (elem_no // 3)
+                                col = col_iter + (elem_no % 3)
+                                found_points.append(Point(row, col))
+                                self._logger.debug(
+                                    "Box eval: new point [%s, %s] = %s",row,
+                                    col, acc_val)
             return found_points
 
         solution = []
