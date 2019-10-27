@@ -100,6 +100,7 @@ class Board():
                                 self._logger.debug(
                                     "Box eval: new point [%s, %s] = %s", row,
                                     col, acc_val)
+                            solution_board[row][col] = acc_val
             return found_points
 
         initial_value = "123456789"
