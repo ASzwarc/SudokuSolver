@@ -101,58 +101,18 @@ class Board():
                                     col, acc_val)
             return found_points
 
-        solution = []
+        initial_value = "123456789"
+        solution = [[initial_value for col in range(len(self._board[0]))]
+                    for row in range(len(self._board))]
         Point = namedtuple('Point', ['row', 'col'])
         # TODO change it to dict with Point as a key and value
         found_points = []
-        # row constraint
-        for row in self._board:
-            solution_row = []
-            possible_values = "123456789"
-            possible_values = possible_values.translate(
-                {ord(str(i)): None for i in row})
-            for elem in row:
+        for row_iter, row in enumerate(self._board):
+            for col_iter, elem in enumerate(row):
                 if elem != 0:
-                    solution_row.append(str(elem))
-                else:
-                    solution_row.append(possible_values)
-            solution.append(solution_row)
-        # col constraint
-        for col_iter in range(len(self._board[0])):
-            col_constraint = [row[col_iter] for row in self._board
-                              if row[col_iter] > 0]
-            trans_dict = {ord(str(i)): None for i in col_constraint}
-            for row_iter in range(len(self._board)):
-                if len(solution[row_iter][col_iter]) > 1:
-                    acc_vals = solution[row_iter][col_iter].translate(
-                        trans_dict)
-                    if len(acc_vals) == 1:
-                        found_points.append(Point(row_iter, col_iter))
-                        self._logger.debug(
-                            "Column eval: new point [%s, %s] = %s",
-                            row_iter, col_iter, acc_vals)
-                    solution[row_iter][col_iter] = acc_vals
-        print_it_nicely(solution)
-        # box constraint
-        for row_iter in range(0, len(self._board), 3):
-            for col_iter in range(0, len(self._board[0]), 3):
-                flattened = [elem for row in solution[row_iter: row_iter + 3]
-                             for elem in row[col_iter: col_iter + 3]]
-                box_constraint_dict = {ord(i): None for i in
-                                       [elem for elem in flattened
-                                        if len(elem) == 1]}
-                for elem_no, elem in enumerate(flattened):
-                    if len(elem) > 1:
-                        acc_vals = flattened[elem_no].translate(
-                            box_constraint_dict)
-                        row = row_iter + (elem_no // 3)
-                        col = col_iter + (elem_no % 3)
-                        solution[row][col] = acc_vals
-                        if len(acc_vals) == 1:
-                            found_points.append(Point(row, col))
-                            self._logger.debug(
-                                "Box eval: new point [%s, %s] = %s",
-                                row, col, acc_vals)
+                    solution[row_iter][col_iter] = str(elem)
+                    found_points.append(Point(row_iter, col_iter))
+
         print_it_nicely(solution)
         self._logger.debug("Found points evaluation")
         for point in found_points:
