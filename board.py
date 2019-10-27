@@ -97,7 +97,7 @@ class Board():
                                 col = col_iter + (elem_no % 3)
                                 found_points.append(Point(row, col))
                                 self._logger.debug(
-                                    "Box eval: new point [%s, %s] = %s",row,
+                                    "Box eval: new point [%s, %s] = %s", row,
                                     col, acc_val)
             return found_points
 
