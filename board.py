@@ -143,7 +143,7 @@ class Board():
         for point in found_points:
             self._logger.debug("Evaluating Point(%s, %s)=%s",
                                point.row, point.col, point.val)
-            found_points.extend(evaluate_point(solution, point))
+            found_points.extend(self._evaluate_point(solution, point))
         print_it_nicely(solution)
 
 
