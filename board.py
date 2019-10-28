@@ -90,22 +90,20 @@ class Board():
 
     def _evaluate_box_constraint(self, solution_board, point):
         found_points = []
-        for row_iter in range(0, len(solution_board), 3):
-            for col_iter in range(0, len(solution_board[0]), 3):
-                flattened = [elem for row in
-                             solution_board[row_iter:row_iter+3]
-                             for elem in row[col_iter:col_iter+3]]
-                for i, elem in enumerate(flattened):
-                    if len(elem) > 1 and point.val in elem:
-                        acc_val = elem.replace(point.val, '', 1)
-                        row = row_iter + (i // 3)
-                        col = col_iter + (i % 3)
-                        if len(acc_val) == 1:
-                            found_points.append(self.Point(row, col, acc_val))
-                            self._logger.debug(
-                                "Box eval: new point [%s, %s] = %s", row,
-                                col, acc_val)
-                        solution_board[row][col] = acc_val
+        row_start = (point.row // 3) * 3
+        col_start = (point.col // 3) * 3
+        flattened = [elem for row in solution_board[row_start:row_start+3]
+                     for elem in row[col_start:col_start+3]]
+        for i, elem in enumerate(flattened):
+            if len(elem) > 1 and point.val in elem:
+                acc_val = elem.replace(point.val, '', 1)
+                row = row_start + (i // 3)
+                col = col_start + (i % 3)
+                if len(acc_val) == 1:
+                    found_points.append(self.Point(row, col, acc_val))
+                    self._logger.debug("Box eval: new point [%s, %s] = %s",
+                                       row, col, acc_val)
+                solution_board[row][col] = acc_val
         return found_points
 
     def _evaluate_point(self, solution_board, point):
