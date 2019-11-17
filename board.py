@@ -135,14 +135,23 @@ class Board():
             print("\n".join([" | ".join([elem.rjust(9, ' ') for elem in row])
                             for row in solution_board]))
 
+        points_to_find = 81
         solution, found_points = self._init_solution_board()
+        points_to_find -= len(found_points)
         print_it_nicely(solution)
         self._logger.debug("Found points evaluation")
         for point in found_points:
             self._logger.debug("Evaluating Point(%s, %s)=%s",
                                point.row, point.col, point.val)
-            found_points.extend(self._evaluate_point(solution, point))
-        print_it_nicely(solution)
+            new_points = self._evaluate_point(solution, point)
+            found_points.extend(new_points)
+            points_to_find -= len(new_points)
+        if points_to_find == 0:
+            print(f"Final solution:")
+            print_it_nicely(solution)
+            return
+        else:
+            print(f"Points to find: {points_to_find}")
 
 
 if __name__ == "__main__":
