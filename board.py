@@ -129,6 +129,16 @@ class Board():
                         row_iter, col_iter, str(elem)))
         return solution, found_points
 
+    def _find_point_to_process(self, solution_board):
+        shortest_point_len = 9
+        for row_no in range(len(solution_board)):
+            for col_no in range(len(solution_board[0])):
+                point = solution_board[row_no][col_no]
+                if (len(point) < shortest_point_len) and len(point) > 1:
+                    shortest_point_len = len(point)
+                    evaluation_point = self.Point(row_no, col_no, point)
+        return evaluation_point
+
     def solver(self):
         def print_it_nicely(solution_board):
             print("\n")
@@ -152,6 +162,12 @@ class Board():
             return
         else:
             print(f"Points to find: {points_to_find}")
+            next_point = self._find_point_to_process(solution)
+            print(f"Next point to process: {next_point}")
+            # Algorithm:
+            # 1. search for the point with least amount of possible numbers
+            # 2. make an assumption and remember it
+            # 3. try to solve board
 
 
 if __name__ == "__main__":
