@@ -157,13 +157,14 @@ class Board():
             found_points.extend(new_points)
             points_to_find -= len(new_points)
         if points_to_find == 0:
-            print(f"Final solution:")
+            self._logger.info("Found solution:")
             print_it_nicely(solution)
             return
         else:
-            print(f"Points to find: {points_to_find}")
+            self._logger.debug("No of points to find: %s", points_to_find)
             next_point = self._find_point_to_process(solution)
-            print(f"Next point to process: {next_point}")
+            self._logger.debug("Next point to process: (%s, %s)=%s",
+                               next_point.row, next_point.col, next_point.val)
             # Algorithm:
             # 1. search for the point with least amount of possible numbers
             # 2. make an assumption and remember it
