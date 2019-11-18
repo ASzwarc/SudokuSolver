@@ -60,6 +60,11 @@ class Board():
             if row < 8:
                 self._logger.debug("-" * 18)
 
+    def print_it_nicely(self, solution_board):
+        print("\n")
+        print("\n".join([" | ".join([elem.rjust(9, ' ') for elem in row])
+                        for row in solution_board]))
+
     def _evaluate_col_constraint(self, solution_board, point):
         found_points = []
         for elem_no, elem in enumerate(solution_board[point.row]):
@@ -140,15 +145,10 @@ class Board():
         return evaluation_point
 
     def solver(self):
-        def print_it_nicely(solution_board):
-            print("\n")
-            print("\n".join([" | ".join([elem.rjust(9, ' ') for elem in row])
-                            for row in solution_board]))
-
         points_to_find = 81
         solution, found_points = self._init_solution_board()
         points_to_find -= len(found_points)
-        print_it_nicely(solution)
+        self.print_it_nicely(solution)
         self._logger.debug("Found points evaluation")
         for point in found_points:
             self._logger.debug("Evaluating Point(%s, %s)=%s",
@@ -158,7 +158,7 @@ class Board():
             points_to_find -= len(new_points)
         if points_to_find == 0:
             self._logger.info("Found solution:")
-            print_it_nicely(solution)
+            self.print_it_nicely(solution)
             return
         else:
             self._logger.debug("No of points to find: %s", points_to_find)
