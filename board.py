@@ -1,6 +1,8 @@
 from typing import List
 import logging
 from collections import namedtuple
+import random
+import copy
 
 
 class Board():
@@ -142,7 +144,27 @@ class Board():
                 if (len(point) < shortest_point_len) and len(point) > 1:
                     shortest_point_len = len(point)
                     evaluation_point = self.Point(row_no, col_no, point)
-        return evaluation_point
+        return evaluation_point.row, evaluation_point.col
+
+    def _solve_with_assumption(self, solution_board,
+                               point_row, point_col, points_to_find):
+        guessed_val = random.choice(solution_board[point_row][point_col])
+        points_to_find -= 1
+        found_points = [self.Point(point_row, point_col, guessed_val)]
+        solution_board[point_row][point_col] = guessed_val
+        self._logger.debug("Evaluation based on assumption Point(%s, %s)=%s",
+                           point_row, point_col, guessed_val)
+        for point in found_points:
+            self._logger.debug("Evaluating Point(%s, %s)=%s",
+                               point.row, point.col, point.val)
+            new_points = self._evaluate_point(solution_board, point)
+            found_points.extend(new_points)
+            points_to_find -= len(new_points)
+        if points_to_find == 0:
+            self._logger.info("Found solution:")
+            self.print_it_nicely(solution_board)
+        else:
+            self.print_it_nicely(solution_board)
 
     def solver(self):
         points_to_find = 81
@@ -162,9 +184,11 @@ class Board():
             return
         else:
             self._logger.debug("No of points to find: %s", points_to_find)
-            next_point = self._find_point_to_process(solution)
-            self._logger.debug("Next point to process: (%s, %s)=%s",
-                               next_point.row, next_point.col, next_point.val)
+            point_row, point_col = self._find_point_to_process(solution)
+            self._logger.debug("Next point to process: (%s, %s)=%s", point_row,
+                               point_col, solution[point_row][point_col])
+            self._solve_with_assumption(copy.deepcopy(solution), point_row,
+                                        point_col, copy.copy(points_to_find))
             # Algorithm:
             # 1. search for the point with least amount of possible numbers
             # 2. make an assumption and remember it
