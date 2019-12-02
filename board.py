@@ -147,7 +147,7 @@ class Board():
         return evaluation_point.row, evaluation_point.col
 
     def _solve_with_assumption(self, solution_board,
-                               point_row, point_col, points_to_find):
+                               point_row, point_col, points_to_find) -> bool:
         guessed_val = random.choice(solution_board[point_row][point_col])
         points_to_find -= 1
         found_points = [self.Point(point_row, point_col, guessed_val)]
@@ -163,8 +163,10 @@ class Board():
         if points_to_find == 0:
             self._logger.info("Found solution:")
             self.print_it_nicely(solution_board)
+            return True
         else:
             self.print_it_nicely(solution_board)
+            return False
 
     def solver(self):
         points_to_find = 81
@@ -184,11 +186,19 @@ class Board():
             return
         else:
             self._logger.debug("No of points to find: %s", points_to_find)
-            point_row, point_col = self._find_point_to_process(solution)
-            self._logger.debug("Next point to process: (%s, %s)=%s", point_row,
-                               point_col, solution[point_row][point_col])
-            self._solve_with_assumption(copy.deepcopy(solution), point_row,
-                                        point_col, copy.copy(points_to_find))
+            solution_found = False
+            exp_board = copy.deepcopy(solution)
+            exp_points_to_find = points_to_find[:]
+            while not solution_found:
+                point_row, point_col = self._find_point_to_process(exp_board)
+                self._logger.debug("Next point to process: (%s, %s)=%s",
+                                   point_row, point_col,
+                                   solution[point_row][point_col])
+                solution_found = self._solve_with_assumption(exp_board,
+                                                             point_row,
+                                                             point_col,
+                                                             exp_points_to_find
+                                                             )
             # Algorithm:
             # 1. search for the point with least amount of possible numbers
             # 2. make an assumption and remember it
